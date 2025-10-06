@@ -1,43 +1,46 @@
 import mongoose from 'mongoose';
 
 const educationSchema = new mongoose.Schema({
-    institution: { type: String, required: true },
-    degree: { type: String, required: true },
+    institution: String,
+    degree: String,
     field: String,
-    startDate: Date,
-    endDate: Date,
+    year: String, // Accept year or year range
+    location: String, // City, State
     grade: String,
     description: String,
 });
 
 const experienceSchema = new mongoose.Schema({
-    company: { type: String, required: true },
-    position: { type: String, required: true },
+    company: String,
+    position: String, // Also accept 'title' field
+    title: String, // Alternative to position (used by AI parser)
     location: String,
-    startDate: Date,
-    endDate: Date,
+    startDate: String, // Changed to String to accept formats like "Jan 2020"
+    endDate: String, // Changed to String to accept formats like "Present"
     current: { type: Boolean, default: false },
-    description: String,
+    description: [String], // Changed to array to store bullet points
     technologies: [String],
 });
 
 const projectSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+    name: String,
     description: String,
     technologies: [String],
     url: String,
-    startDate: Date,
-    endDate: Date,
+    link: String, // Alternative to url (used by AI parser)
+    duration: String, // Time period
     highlights: [String],
 });
 
 const certificationSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+    name: String,
     issuer: String,
-    issueDate: Date,
-    expiryDate: Date,
+    date: String, // Issue date as string
+    issueDate: String, // Alternative field name
+    expiryDate: String,
     credentialId: String,
     credentialUrl: String,
+    link: String, // Alternative to credentialUrl
 });
 
 const socialLinksSchema = new mongoose.Schema({
@@ -81,14 +84,25 @@ const resumeSchema = new mongoose.Schema(
             type: String,
             required: [true, 'File URL is required'],
         },
+        cloudinaryPublicId: {
+            type: String, // For Cloudinary file deletion
+        },
         fileSize: Number, // in bytes
         fileType: {
             type: String,
-            enum: ['pdf', 'doc', 'docx', 'txt'],
+            enum: ['pdf', 'doc', 'docx', 'txt', 'application/pdf'],
         },
 
         // Parsed data from resume
         parsedData: {
+            // Personal information
+            personalInfo: {
+                name: String,
+                email: String,
+                phone: String,
+                location: String,
+            },
+
             // Basic information
             summary: String,
             objective: String,
@@ -107,6 +121,12 @@ const resumeSchema = new mongoose.Schema(
                 tools: [String],
                 frameworks: [String],
             },
+
+            // Languages (spoken languages)
+            languages: [{
+                name: String,
+                proficiency: String,
+            }],
 
             // Additional information
             achievements: [String],
@@ -135,6 +155,8 @@ const resumeSchema = new mongoose.Schema(
             weaknesses: [String],
             suggestions: [String],
             keywordMatches: [String],
+            keyHighlights: [String], // Added for Gemini AI analysis
+            missingElements: [String], // Added for Gemini AI analysis
             readabilityScore: Number,
             atsCompatibilityScore: Number,
             completenessScore: Number,

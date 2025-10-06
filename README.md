@@ -6,10 +6,15 @@ An industry-ready AI-powered interview platform built with Next.js, MongoDB, and
 
 - **Multi-Role System**: User, Company, and Admin roles with different permissions
 - **Smart Authentication**: Secure JWT-based authentication with HTTP-only cookies
+- **Email Verification**: OTP-based email verification with SMTP support
+- **AI-Powered Resume Upload**: Upload PDFs to Cloudinary, parse with Google Gemini AI
+- **Intelligent Resume Parsing**: Automatic extraction of skills, experience, education, and more
+- **AI Resume Analysis**: Get scores, strengths, weaknesses, and suggestions
 - **Resume Version Control**: Upload multiple resumes, maintain history, and activate any version
-- **Resume Analysis**: Automatic resume parsing and data extraction (ready for AI integration)
+- **Beautiful Review Interface**: Edit AI-parsed data before saving
 - **Modern UI**: Beautiful, responsive design with Tailwind CSS and Lucide icons
 - **MongoDB Integration**: Scalable database with optimized schemas and indexes
+- **Cloud Storage**: Secure file storage with Cloudinary
 - **Security First**: Password hashing, secure sessions, and protected routes
 - **Built with Bun**: Lightning-fast package management and execution
 
@@ -19,6 +24,10 @@ An industry-ready AI-powered interview platform built with Next.js, MongoDB, and
 - **Runtime**: Bun (for faster installs and builds)
 - **Database**: MongoDB with Mongoose ODM
 - **Authentication**: JWT + HTTP-only cookies
+- **Email**: Nodemailer (SMTP)
+- **AI**: Google Gemini 1.5 Flash
+- **Cloud Storage**: Cloudinary
+- **PDF Parsing**: pdf-parse
 - **Styling**: Tailwind CSS 4
 - **Icons**: Lucide React
 - **Security**: bcryptjs, jsonwebtoken
@@ -46,13 +55,39 @@ bun install
 
 Create a `.env.local` file in the root directory (already created):
 ```env
-MONGODB_URI=mongodb://localhost:27017/ai-interviewer
+# Database
+MONGODB_URI=mongodb+srv://your-connection-string
+
+# Authentication
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-super-secret-key-change-this-in-production-min-32-chars
 JWT_SECRET=your-jwt-secret-key-change-this-in-production-min-32-chars
+
+# Email (SMTP)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASSWORD=your-app-password
+EMAIL_FROM=AI Interviewer <noreply@aiinterviewer.com>
+
+# OTP Configuration
+OTP_EXPIRY_MINUTES=10
+NEXT_PUBLIC_OTP_EXPIRY_MINUTES=10
+
+# Cloudinary (for resume storage)
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+
+# Google Gemini AI
+GEMINI_API_KEY=your-gemini-api-key
 ```
 
-**Important**: Change the secret keys to secure random strings in production!
+**Important**: 
+- Change the secret keys to secure random strings in production!
+- Get Cloudinary credentials from [cloudinary.com](https://cloudinary.com)
+- Get Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
+- See `QUICK_SETUP.md` for detailed setup instructions
 
 4. **Start MongoDB**
 
@@ -79,23 +114,30 @@ jd-resume/
 ├── src/
 │   ├── app/
 │   │   ├── api/
-│   │   │   ├── auth/          # Authentication API routes
-│   │   │   └── resume/        # Resume management API routes
+│   │   │   ├── auth/          # Authentication API routes (register, login, verify-otp, etc.)
+│   │   │   └── resume/        # Resume management (upload, save, version control)
 │   │   ├── auth/
 │   │   │   ├── login/         # Login page
-│   │   │   └── register/      # Registration page
+│   │   │   ├── register/      # Registration page
+│   │   │   ├── verify-email/  # OTP verification page
+│   │   │   └── upload-resume/ # Resume upload with AI parsing
 │   │   ├── dashboard/         # User dashboard
 │   │   ├── layout.jsx         # Root layout
 │   │   └── page.jsx           # Homepage
 │   ├── lib/
 │   │   ├── mongodb.js         # MongoDB connection
-│   │   └── auth.js            # Auth utilities
+│   │   ├── auth.js            # Auth utilities (JWT)
+│   │   ├── email.js           # Email utilities (SMTP, OTP)
+│   │   ├── cloudinary.js      # Cloud storage utilities
+│   │   └── gemini.js          # AI parsing utilities
 │   ├── models/
-│   │   ├── User.js            # User schema
+│   │   ├── User.js            # User schema with OTP methods
 │   │   └── Resume.js          # Resume schema with version control
 │   └── middleware.js          # Route protection
 ├── RESUME_ARCHITECTURE.md     # Detailed resume system documentation
-├── RESUME_USAGE_EXAMPLES.js   # Code examples for resume management
+├── RESUME_UPLOAD_SYSTEM.md    # Complete AI upload guide
+├── EMAIL_VERIFICATION_SYSTEM.md # Email verification guide
+├── QUICK_SETUP.md             # Quick start guide
 ├── .env.local                 # Environment variables
 └── package.json
 ```

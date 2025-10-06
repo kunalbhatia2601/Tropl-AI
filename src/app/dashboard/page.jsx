@@ -21,6 +21,11 @@ export default function DashboardPage() {
 
             if (data.success) {
                 setUser(data.user);
+                
+                // Redirect to upload resume page if user doesn't have at least one resume
+                if (!data.user.hasActiveResume) {
+                    router.push('/auth/upload-resume');
+                }
             } else {
                 router.push('/auth/login');
             }

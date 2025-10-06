@@ -59,7 +59,14 @@ export default function LoginPage() {
             const data = await response.json();
 
             if (data.success) {
-                router.push('/dashboard');
+                // Check if user has at least one resume
+                if (!data.user.hasActiveResume) {
+                    // Redirect to upload resume page if no resume exists
+                    router.push('/auth/upload-resume');
+                } else {
+                    // Otherwise go to dashboard
+                    router.push('/dashboard');
+                }
             } else {
                 setErrors({ submit: data.message || 'Login failed' });
             }
