@@ -77,8 +77,9 @@ export default function RegisterPage() {
 
             if (data.success) {
                 setSuccess(true);
+                // Redirect to email verification page
                 setTimeout(() => {
-                    router.push('/dashboard');
+                    router.push(`/auth/verify-email?email=${encodeURIComponent(formData.email)}`);
                 }, 1500);
             } else {
                 setErrors({ submit: data.message || 'Registration failed' });
@@ -101,7 +102,7 @@ export default function RegisterPage() {
                         Registration Successful!
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400">
-                        Redirecting you to dashboard...
+                        Redirecting to email verification...
                     </p>
                 </div>
             </div>

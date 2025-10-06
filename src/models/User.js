@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    
+
     // User Role
     role: {
       type: String,
@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema(
       country: String,
     },
     dateOfBirth: Date,
-    
+
     // Quick access to active resume (denormalized for performance)
     activeResumeId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -101,10 +101,10 @@ const userSchema = new mongoose.Schema(
     },
     emailVerificationToken: String,
     emailVerificationExpires: Date,
-    
+
     passwordResetToken: String,
     passwordResetExpires: Date,
-    
+
     isActive: {
       type: Boolean,
       default: true,
@@ -170,6 +170,52 @@ userSchema.methods.setActiveResume = async function (resumeId) {
   this.activeResumeId = resumeId;
   this.hasActiveResume = true;
   await this.save();
+};
+
+// Generate OTP for email verification
+userSchema.methods.generateOTP = function () {
+  // Generate 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // Hash the OTP before storing (security best practice)
+  const crypto = require('crypto');
+  this.emailVerificationToken = crypto
+    .createHash('sha256')
+    .update(otp)
+    .digest('hex');
+
+  // Set expiry time (default 10 minutes)
+  const expiryMinutes = parseInt(process.env.OTP_EXPIRY_MINUTES || '10');
+  this.emailVerificationExpires = new Date(Date.now() + expiryMinutes * 60 * 1000);
+
+  return otp; // Return plain OTP for sending in email
+};
+
+// Verify OTP
+userSchema.methods.verifyOTP = function (otp) {
+  if (!this.emailVerificationToken || !this.emailVerificationExpires) {
+    return false;
+  }
+
+  // Check if OTP expired
+  if (new Date() > this.emailVerificationExpires) {
+    return false;
+  }
+
+  // Hash the provided OTP and compare
+  const crypto = require('crypto');
+  const hashedOTP = crypto
+    .createHash('sha256')
+    .update(otp)
+    .digest('hex');
+
+  return hashedOTP === this.emailVerificationToken;
+};
+
+// Clear OTP after verification
+userSchema.methods.clearOTP = function () {
+  this.emailVerificationToken = undefined;
+  this.emailVerificationExpires = undefined;
 };
 
 // Static method to find users with active resumes

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
-import { generateToken, createUserSession } from '@/lib/auth';
+import { sendOTPEmail } from '@/lib/email';
 
 export async function POST(request) {
     try {
@@ -41,34 +41,36 @@ export async function POST(request) {
             email: email.toLowerCase(),
             password,
             role: 'user', // Only users can self-register
+            emailVerified: false, // Not verified yet
         });
 
-        // Generate JWT token
-        const token = generateToken(createUserSession(user));
+        // Generate OTP
+        const otp = user.generateOTP();
+        await user.save();
 
-        // Create response with user data (password excluded by toJSON method)
+        // Send OTP email
+        const emailResult = await sendOTPEmail(user.email, user.name, otp);
+        
+        if (!emailResult.success) {
+            console.error('Failed to send OTP email:', emailResult.error);
+            // Don't fail registration if email fails, user can resend
+        }
+
+        // Return success WITHOUT JWT token (user must verify email first)
         const response = NextResponse.json(
             {
                 success: true,
-                message: 'Registration successful',
+                message: 'Registration successful! Please check your email for the verification code.',
                 user: {
                     id: user._id,
                     name: user.name,
                     email: user.email,
-                    role: user.role,
+                    emailVerified: user.emailVerified,
                 },
+                requiresVerification: true,
             },
             { status: 201 }
         );
-
-        // Set HTTP-only cookie
-        response.cookies.set('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 7 * 24 * 60 * 60, // 7 days
-            path: '/',
-        });
 
         return response;
     } catch (error) {

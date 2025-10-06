@@ -7,15 +7,18 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "git" : "node scripts/git.js"
+    "git": "node scripts/git.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.544.0",
     "mongoose": "^8.19.0",
+    "multer": "^2.0.2",
     "next": "15.5.4",
     "next-auth": "^4.24.11",
+    "nodemailer": "^7.0.7",
+    "pdf-parse": "^2.1.7",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
@@ -24,6 +27,8 @@
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^3.0.0",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.0.0",
+    "@types/nodemailer": "^7.0.2",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "tailwindcss": "^4"
