@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, ArrowLeft, Loader2, RefreshCw } from 'lucide-react';
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const email = searchParams.get('email') || '';
@@ -259,5 +259,17 @@ export default function VerifyEmailPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function VerifyEmailPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+            </div>
+        }>
+            <VerifyEmailContent />
+        </Suspense>
     );
 }
