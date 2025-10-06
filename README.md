@@ -6,6 +6,7 @@ An industry-ready AI-powered interview platform built with Next.js, MongoDB, and
 
 - **Multi-Role System**: User, Company, and Admin roles with different permissions
 - **Smart Authentication**: Secure JWT-based authentication with HTTP-only cookies
+- **Resume Version Control**: Upload multiple resumes, maintain history, and activate any version
 - **Resume Analysis**: Automatic resume parsing and data extraction (ready for AI integration)
 - **Modern UI**: Beautiful, responsive design with Tailwind CSS and Lucide icons
 - **MongoDB Integration**: Scalable database with optimized schemas and indexes
@@ -78,7 +79,8 @@ jd-resume/
 ├── src/
 │   ├── app/
 │   │   ├── api/
-│   │   │   └── auth/          # Authentication API routes
+│   │   │   ├── auth/          # Authentication API routes
+│   │   │   └── resume/        # Resume management API routes
 │   │   ├── auth/
 │   │   │   ├── login/         # Login page
 │   │   │   └── register/      # Registration page
@@ -89,8 +91,11 @@ jd-resume/
 │   │   ├── mongodb.js         # MongoDB connection
 │   │   └── auth.js            # Auth utilities
 │   ├── models/
-│   │   └── User.js            # User schema
+│   │   ├── User.js            # User schema
+│   │   └── Resume.js          # Resume schema with version control
 │   └── middleware.js          # Route protection
+├── RESUME_ARCHITECTURE.md     # Detailed resume system documentation
+├── RESUME_USAGE_EXAMPLES.js   # Code examples for resume management
 ├── .env.local                 # Environment variables
 └── package.json
 ```
@@ -137,47 +142,131 @@ jd-resume/
 
 ## 🗄️ Database Schema
 
-### User Model
+### User Model (Authentication & Profile)
 ```javascript
 {
+  // Authentication
   name: String,
   email: String (unique),
   password: String (hashed),
   phone: String,
   role: 'user' | 'company' | 'admin',
   
-  // Resume data
-  resumeUploaded: Boolean,
-  resumeUrl: String,
-  resumeParsedData: {
-    summary: String,
-    skills: [String],
-    certifications: [String],
-    projects: [Object]
+  // Profile
+  profileImage: String,
+  bio: String,
+  location: Object,
+  
+  // Resume Reference (denormalized for performance)
+  activeResumeId: ObjectId (ref: 'Resume'),
+  hasActiveResume: Boolean,
+  
+  // Company Info (for company role)
+  companyInfo: {
+    companyName: String,
+    companyWebsite: String,
+    companySize: String,
+    industry: String,
   },
-  
-  // Professional info
-  education: [Object],
-  experience: [Object],
-  socialLinks: Object,
-  keySkills: [String],
-  
-  // Company fields
-  companyName: String,
-  companyWebsite: String,
   
   // Status
   profileCompleted: Boolean,
   emailVerified: Boolean,
   isActive: Boolean,
+  lastLoginAt: Date,
+  loginCount: Number,
   
   timestamps: true
 }
 ```
 
+### Resume Model (Version Control & Data)
+```javascript
+{
+  // Ownership
+  userId: ObjectId (ref: 'User'),
+  
+  // Version Control
+  isActive: Boolean,
+  version: Number (auto-incremented),
+  previousVersionId: ObjectId (ref: 'Resume'),
+  
+  // File Info
+  fileName: String,
+  fileUrl: String,
+  fileSize: Number,
+  fileType: 'pdf' | 'doc' | 'docx',
+  
+  // Parsed Data
+  parsedData: {
+    summary: String,
+    education: [Object],
+    experience: [Object],
+    projects: [Object],
+    certifications: [Object],
+    skills: {
+      technical: [String],
+      soft: [String],
+      languages: [String],
+      tools: [String],
+      frameworks: [String],
+    },
+    achievements: [String],
+    publications: [String],
+  },
+  
+  // Social Links
+  socialLinks: Object,
+  
+  // AI Analysis
+  aiAnalysis: {
+    overallScore: Number,
+    strengths: [String],
+    weaknesses: [String],
+    suggestions: [String],
+    atsCompatibilityScore: Number,
+  },
+  
+  // Metadata
+  uploadedAt: Date,
+  parsedAt: Date,
+  parsingStatus: 'pending' | 'processing' | 'completed' | 'failed',
+  
+  timestamps: true
+}
+```
+
+**📚 See [RESUME_ARCHITECTURE.md](./RESUME_ARCHITECTURE.md) for detailed documentation**
+
+## 🎯 Resume Version Control
+
+The platform includes a powerful resume version control system:
+
+### Key Features:
+- ✅ **Multiple Resumes**: Upload unlimited resume versions
+- ✅ **Automatic Versioning**: Each upload creates a new version
+- ✅ **History Tracking**: View all previous resume versions
+- ✅ **Easy Rollback**: Activate any previous version with one click
+- ✅ **Auto-Deactivation**: Old versions automatically marked inactive
+- ✅ **Performance**: Denormalized active resume for fast access
+
+### API Endpoints:
+- `GET /api/resume?action=active` - Get active resume
+- `GET /api/resume?action=history` - Get resume history
+- `POST /api/resume` - Upload new resume (auto-increments version)
+- `POST /api/resume/activate` - Activate specific version
+- `PUT /api/resume` - Update resume data
+- `DELETE /api/resume?id=xxx` - Deactivate resume
+- `GET /api/resume/stats` - Get resume statistics
+
+**📖 Complete examples in [RESUME_USAGE_EXAMPLES.js](./RESUME_USAGE_EXAMPLES.js)**
+
 ## 🚦 Next Steps (Future Development)
 
-- [ ] Resume upload and parsing with AI
+- [ ] File upload to S3/Cloudinary
+- [ ] Resume parsing with AI (OpenAI/Claude)
+- [ ] Resume builder from scratch
+- [ ] Resume comparison feature
 - [ ] AI interview functionality
 - [ ] Real-time interview sessions
 - [ ] Video integration

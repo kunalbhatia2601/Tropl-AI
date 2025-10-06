@@ -29,8 +29,10 @@ export async function GET() {
         // Connect to database
         await connectDB();
 
-        // Get user data
-        const user = await User.findById(decoded.id).select('-password');
+        // Get user data with active resume populated
+        const user = await User.findById(decoded.id)
+            .select('-password')
+            .populate('activeResumeId', 'fileName version uploadedAt');
 
         if (!user) {
             return NextResponse.json(
@@ -48,10 +50,15 @@ export async function GET() {
                     email: user.email,
                     role: user.role,
                     phone: user.phone,
+                    bio: user.bio,
+                    location: user.location,
+                    profileImage: user.profileImage,
                     profileCompleted: user.profileCompleted,
-                    resumeUploaded: user.resumeUploaded,
-                    keySkills: user.keySkills,
-                    socialLinks: user.socialLinks,
+                    hasActiveResume: user.hasActiveResume,
+                    activeResume: user.activeResumeId,
+                    companyInfo: user.companyInfo,
+                    preferences: user.preferences,
+                    lastLoginAt: user.lastLoginAt,
                     createdAt: user.createdAt,
                 },
             },

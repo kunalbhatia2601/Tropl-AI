@@ -47,6 +47,9 @@ export async function POST(request) {
             );
         }
 
+        // Record login
+        await user.recordLogin();
+
         // Generate JWT token
         const token = generateToken(createUserSession(user));
 
@@ -61,7 +64,7 @@ export async function POST(request) {
                     email: user.email,
                     role: user.role,
                     profileCompleted: user.profileCompleted,
-                    resumeUploaded: user.resumeUploaded,
+                    hasActiveResume: user.hasActiveResume,
                 },
             },
             { status: 200 }

@@ -109,15 +109,18 @@ export default function DashboardPage() {
                                 <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                             </div>
                             <span className="text-3xl font-bold text-slate-900 dark:text-white">
-                                {user?.resumeUploaded ? '1' : '0'}
+                                {user?.hasActiveResume ? '1' : '0'}
                             </span>
                         </div>
                         <h3 className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                            Resume Uploaded
+                            Active Resume
                         </h3>
-                    </div>
-
-                    <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-lg">
+                        {user?.activeResume && (
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                                {user.activeResume.fileName}
+                            </p>
+                        )}
+                    </div>                    <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700 shadow-lg">
                         <div className="flex items-center justify-between mb-4">
                             <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
                                 <Calendar className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
