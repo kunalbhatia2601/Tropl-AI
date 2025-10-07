@@ -60,14 +60,12 @@ const resumeSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
             required: [true, 'User ID is required'],
-            index: true,
         },
 
         // Resume status
         isActive: {
             type: Boolean,
             default: true,
-            index: true,
         },
 
         version: {

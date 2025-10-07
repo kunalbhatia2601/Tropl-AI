@@ -53,7 +53,6 @@ const userSchema = new mongoose.Schema(
     hasActiveResume: {
       type: Boolean,
       default: false,
-      index: true,
     },
 
     // Company-specific fields (when role is 'company')

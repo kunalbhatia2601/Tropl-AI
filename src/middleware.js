@@ -9,7 +9,7 @@ export function middleware(request) {
     const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
 
     // Protected routes
-    const protectedRoutes = ['/dashboard', '/profile', '/interviews'];
+    const protectedRoutes = ['/dashboard', '/profile', '/interviews', '/resumes'];
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
 
     // If user is not authenticated and trying to access protected route

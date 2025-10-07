@@ -202,7 +202,7 @@ Important instructions:
  */
 export async function analyzeResumeWithAI(resumeData) {
     try {
-        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
         const prompt = `
 You are an expert resume reviewer and career coach. Analyze the following resume data and provide a comprehensive analysis.

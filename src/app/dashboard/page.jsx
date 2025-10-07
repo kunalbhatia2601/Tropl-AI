@@ -68,7 +68,21 @@ export default function DashboardPage() {
                             </span>
                         </Link>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-6">
+                            <nav className="hidden md:flex items-center gap-6">
+                                <Link
+                                    href="/dashboard"
+                                    className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                >
+                                    Dashboard
+                                </Link>
+                                <Link
+                                    href="/resumes"
+                                    className="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                                >
+                                    My Resumes
+                                </Link>
+                            </nav>
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
                                     <User className="w-5 h-5 text-white" />
@@ -158,25 +172,25 @@ export default function DashboardPage() {
                         Quick Actions
                     </h2>
                     <div className="grid md:grid-cols-2 gap-4">
-                        <button className="flex items-center gap-4 p-6 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl hover:from-blue-600 hover:to-indigo-600 transition-all shadow-lg hover:shadow-xl">
+                        <Link href="/resumes" className="flex items-center gap-4 p-6 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-xl hover:from-blue-600 hover:to-indigo-600 transition-all shadow-lg hover:shadow-xl">
                             <FileText className="w-8 h-8" />
                             <div className="text-left">
-                                <div className="font-semibold text-lg">Upload Resume</div>
+                                <div className="font-semibold text-lg">My Resumes</div>
                                 <div className="text-sm text-blue-100">
-                                    Start by uploading your resume
+                                    View and manage all your resumes
                                 </div>
                             </div>
-                        </button>
+                        </Link>
 
-                        <button className="flex items-center gap-4 p-6 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl hover:from-indigo-600 hover:to-purple-600 transition-all shadow-lg hover:shadow-xl">
+                        <Link href="/auth/upload-resume" className="flex items-center gap-4 p-6 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl hover:from-indigo-600 hover:to-purple-600 transition-all shadow-lg hover:shadow-xl">
                             <Calendar className="w-8 h-8" />
                             <div className="text-left">
-                                <div className="font-semibold text-lg">Schedule Interview</div>
+                                <div className="font-semibold text-lg">Upload Resume</div>
                                 <div className="text-sm text-indigo-100">
-                                    Book your AI interview session
+                                    Upload a new resume version
                                 </div>
                             </div>
-                        </button>
+                        </Link>
 
                         <button className="flex items-center gap-4 p-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg hover:shadow-xl">
                             <User className="w-8 h-8" />
