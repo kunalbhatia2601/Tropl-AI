@@ -2,17 +2,21 @@
   "name": "jd-resume",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "git": "node scripts/git.js"
+    "git": "node scripts/git.js",
+    "resumes": "node src/bulk-upload-resumes.js"
   },
   "dependencies": {
+    "@faker-js/faker": "^10.0.0",
     "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.7.0",
+    "dotenv": "^17.2.3",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.544.0",
     "mongoose": "^8.19.0",

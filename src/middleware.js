@@ -12,8 +12,11 @@ export function middleware(request) {
     const protectedRoutes = ['/dashboard', '/profile', '/interviews', '/resumes'];
     const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
 
+    // Admin routes
+    const isAdminRoute = pathname.startsWith('/admin');
+
     // If user is not authenticated and trying to access protected route
-    if (!token && isProtectedRoute) {
+    if (!token && (isProtectedRoute || isAdminRoute)) {
         const url = new URL('/auth/login', request.url);
         url.searchParams.set('callbackUrl', pathname);
         return NextResponse.redirect(url);
